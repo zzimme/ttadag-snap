@@ -508,6 +508,10 @@ IDE_Morph.prototype.createLogo = function () {
         if (this.texture) {
             this.drawTexture(this.texture);
         }
+
+        context.lineWidth = 2;
+        context.strokeStyle="#FF0000";
+        context.strokeRect(0, 0, this.width(), this.height());
     };
 
     this.logo.drawCachedTexture = function () {

@@ -1256,6 +1256,7 @@ function newCanvas(extentPoint, nonRetina) {
     canvas = document.createElement('canvas');
     canvas.width = ext.x;
     canvas.height = ext.y;
+    canvas.style.border = "1px solid #f00;";
     if (nonRetina && canvas.isRetinaEnabled) {
         canvas.isRetinaEnabled = false;
     }
@@ -3061,6 +3062,10 @@ Morph.prototype.drawNew = function () {
     } else if (this.texture) {
         this.drawTexture(this.texture);
     }
+
+    context.lineWidth = 2;
+    context.strokeStyle="#FF0000";
+    context.strokeRect(0, 0, this.width(), this.height());
 };
 
 Morph.prototype.drawTexture = function (url) {
@@ -7720,7 +7725,7 @@ StringMorph.prototype.drawNew = function () {
     if (this.isShowingBlanks) {
         this.renderWithBlanks(context, x, fontHeight(this.fontSize) + y);
     } else {
-        context.fillText(txt, x, fontHeight(this.fontSize) + y);
+        context.fillText("123", x, fontHeight(this.fontSize) + y);
     }
 
     // draw the selection
@@ -7742,6 +7747,7 @@ StringMorph.prototype.drawNew = function () {
             this.parent.fixLayout();
         }
     }
+
 };
 
 StringMorph.prototype.renderWithBlanks = function (context, startX, y) {
