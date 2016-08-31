@@ -249,6 +249,10 @@ PushButtonMorph.prototype.drawBackground = function (context, color) {
     context.closePath();
     context.fill();
     context.lineWidth = this.outline;
+
+    context.lineWidth = 2;
+    context.strokeStyle="blue";
+    context.strokeRect(0, 0, this.width(), this.height());
 };
 
 PushButtonMorph.prototype.drawEdges = function (

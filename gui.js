@@ -510,7 +510,7 @@ IDE_Morph.prototype.createLogo = function () {
         }
 
         context.lineWidth = 2;
-        context.strokeStyle="#FF0000";
+        context.strokeStyle="#dddddd";
         context.strokeRect(0, 0, this.width(), this.height());
     };
 
@@ -565,7 +565,7 @@ IDE_Morph.prototype.createControlBar = function () {
     };
     this.add(this.controlBar);
 
-    //smallStageButton
+    /*//smallStageButton
     button = new ToggleButtonMorph(
         null, //colors,
         myself, // the IDE is the target
@@ -575,6 +575,7 @@ IDE_Morph.prototype.createControlBar = function () {
             new SymbolMorph('normalStage', 14)
         ],
         function () {  // query
+
             return myself.isSmallStage;
         }
     );
@@ -589,7 +590,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
-    button.drawNew();
+    button.drawNew();       //PushButton drawNew
     // button.hint = 'stage size\nsmall & normal';
     button.fixLayout();
     button.refresh();
@@ -717,7 +718,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button.fixLayout();
     startButton = button;
     this.controlBar.add(startButton);
-    this.controlBar.startButton = startButton;
+    this.controlBar.startButton = startButton;*/
 
     // projectButton
     button = new PushButtonMorph(
@@ -743,7 +744,7 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(projectButton);
     this.controlBar.projectButton = projectButton; // for menu positioning
 
-    // settingsButton
+   /* // settingsButton
     button = new PushButtonMorph(
         this,
         'settingsMenu',
@@ -788,10 +789,10 @@ IDE_Morph.prototype.createControlBar = function () {
     button.fixLayout();
     cloudButton = button;
     this.controlBar.add(cloudButton);
-    this.controlBar.cloudButton = cloudButton; // for menu positioning
+    this.controlBar.cloudButton = cloudButton; // for menu positioning*/
 
     this.controlBar.fixLayout = function () {
-        x = this.right() - padding;
+        /*x = this.right() - padding;
         [stopButton, pauseButton, startButton].forEach(
             function (button) {
                 button.setCenter(myself.controlBar.center());
@@ -813,16 +814,19 @@ IDE_Morph.prototype.createControlBar = function () {
                 button.setLeft(x);
                 x += button.width();
             }
-        );
+        );*/
 
-        settingsButton.setCenter(myself.controlBar.center());
-        settingsButton.setLeft(this.left());
+        //settingsButton.setCenter(myself.controlBar.center());
+       // settingsButton.setLeft(this.left());
 
-        cloudButton.setCenter(myself.controlBar.center());
+        /*cloudButton.setCenter(myself.controlBar.center());
         cloudButton.setRight(settingsButton.left() - padding);
-
-        projectButton.setCenter(myself.controlBar.center());
-        projectButton.setRight(cloudButton.left() - padding);
+*/
+        console.log("bound:"+projectButton.bounds.toString());
+        console.log("center corners:"+myself.controlBar.corners());
+        projectButton.setLeft(myself.controlBar.left());
+        //projectButton.setCenter(myself.controlBar.center());
+        //projectButton.setRight(cloudButton.right() + padding);
 
         this.updateLabel();
     };
@@ -852,7 +856,7 @@ IDE_Morph.prototype.createControlBar = function () {
         this.label.drawNew();
         this.add(this.label);
         this.label.setCenter(this.center());
-        this.label.setLeft(this.settingsButton.right() + padding);
+        //this.label.setLeft(this.settingsButton.right() + padding);
     };
 };
 

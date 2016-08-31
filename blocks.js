@@ -8758,6 +8758,7 @@ SymbolMorph.prototype.drawNew = function () {
     sy = this.shadowOffset.y < 0 ? 0 : this.shadowOffset.y;
     x = this.shadowOffset.x < 0 ? Math.abs(this.shadowOffset.x) : 0;
     y = this.shadowOffset.y < 0 ? Math.abs(this.shadowOffset.y) : 0;
+    console.log("shadowColor:"+this.shadowColor);
     if (this.shadowColor) {
         ctx.drawImage(
             this.symbolCanvasColored(this.shadowColor),
@@ -9082,7 +9083,7 @@ SymbolMorph.prototype.drawSymbolSmallStage = function (canvas, color) {
 
     ctx.fillStyle = color.toString();
     ctx.fillRect(w2, 0, w2, h2);
-
+    console.log("w:"+w+"  h:"+h);
     return canvas;
 };
 
@@ -9093,11 +9094,11 @@ SymbolMorph.prototype.drawSymbolNormalStage = function (canvas, color) {
         h = canvas.height,
         w2 = w / 2,
         h2 = h / 2;
-
+    console.log("w:"+w+"  h:"+h);
     ctx.fillStyle = color.toString();
     ctx.fillRect(0, 0, w, h);
 
-    ctx.fillStyle = color.darker(25).toString();
+    ctx.fillStyle = color.darker(80).toString();
     ctx.fillRect(w2, 0, w2, h2);
 
     return canvas;

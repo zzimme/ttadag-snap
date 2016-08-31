@@ -1256,7 +1256,7 @@ function newCanvas(extentPoint, nonRetina) {
     canvas = document.createElement('canvas');
     canvas.width = ext.x;
     canvas.height = ext.y;
-    canvas.style.border = "1px solid #f00;";
+
     if (nonRetina && canvas.isRetinaEnabled) {
         canvas.isRetinaEnabled = false;
     }
@@ -7725,7 +7725,7 @@ StringMorph.prototype.drawNew = function () {
     if (this.isShowingBlanks) {
         this.renderWithBlanks(context, x, fontHeight(this.fontSize) + y);
     } else {
-        context.fillText("123", x, fontHeight(this.fontSize) + y);
+        context.fillText(txt, x, fontHeight(this.fontSize) + y);
     }
 
     // draw the selection
@@ -8737,6 +8737,8 @@ TriggerMorph.prototype.createBackgrounds = function () {
     context.fillRect(0, 0, ext.x, ext.y);
 
     this.image = this.normalImage;
+
+
 };
 
 TriggerMorph.prototype.createLabel = function () {
