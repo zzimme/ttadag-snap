@@ -734,16 +734,36 @@ IDE_Morph.prototype.createControlBar = function () {
     button.color = colors[0];
     button.highlightColor = colors[1];
     button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
+    button.labelMinExtent = new Point(56, 18);
     button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
+    button.setExtent(new Point(200,200));
+    var label = new StringMorph(
+        "FILE",
+        10,
+        'sans-serif',
+        true,
+        false,
+        false,
+        null,
+        myself.frameColor.darker(myself.buttonContrast)
+    );
+    label.color = myself.buttonLabelColor;
+    label.drawNew();
+
+    //label.setCenter(button.labelMinExtent);
+    label.setRight(this.right()+5);
+
+    button.add(label);
     console.log("this.labelString:"+button.labelString);
     button.drawNew();
     // button.hint = 'open, save, & annotate project';
     button.fixLayout();
+
+
     projectButton = button;
     this.controlBar.add(projectButton);
     this.controlBar.projectButton = projectButton; // for menu positioning
@@ -833,7 +853,7 @@ IDE_Morph.prototype.createControlBar = function () {
         //projectButton.setCenter(myself.controlBar.center());
         //projectButton.setRight(cloudButton.right() + padding);
 
-        this.updateLabel();
+        //this.updateLabel();
     };
 
     this.controlBar.updateLabel = function () {

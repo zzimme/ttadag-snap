@@ -8969,7 +8969,7 @@ SymbolMorph.prototype.drawSymbolFile = function (canvas, color) {
     var ctx = canvas.getContext('2d'),
         w = Math.min(canvas.width, canvas.height) / 2;
     //w = w + 40;
-    alert(w);
+
     ctx.fillStyle = color.toString();
     ctx.beginPath();
     ctx.moveTo(0, 0);
