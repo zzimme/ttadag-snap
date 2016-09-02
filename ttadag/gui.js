@@ -906,25 +906,29 @@ IDE_Morph.prototype.createCategories = function () {
             true // has preview
         );
 
+        //drawEdges override
+        button.drawEdges = function(context,
+                                    color,
+                                    topColor,
+                                    bottomColor){
+
+            context.beginPath();
+            context.arc(this.corner,(this.height()/2 ),4,0,2*Math.PI);
+            context.fillStyle= this.pressColor.toString();
+            context.closePath();
+            context.fill();
+        };
+
+
         button.corner = 8;
         button.padding = 2;
         button.labelShadowOffset = new Point(-1, -1);
         button.labelShadowColor = colors[1];
         button.labelColor = myself.buttonLabelColor;
+
         button.fixLayout();
         button.refresh();
-       // button.createEdge();
-        /*var ext = button.extent();
-        var canvas = newCanvas(ext);
-        var ctx = canvas.getContext('2d');
 
-        ctx.beginPath();
-        ctx.arc(0,0,50,0,2*Math.PI);
-        ctx.fillStyle="#e9b226";
-        //ctx.closePath();
-        ctx.fill();*/
-
-        //button.add(ctx);
         myself.categories.add(button);
         return button;
     }

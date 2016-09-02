@@ -635,7 +635,6 @@ ToggleButtonMorph.prototype.refresh = function () {
         }
     }
 
-    this.createEdge();
     this.changed();
 };
 
@@ -669,25 +668,22 @@ ToggleButtonMorph.prototype.fixLayout = function () {
     }
 };
 
-// ToggleButtonMorph drawing
-
-ToggleButtonMorph.prototype.createEdge = function (){
-    var ctx,
+ToggleButtonMorph.prototype.getCanvas = function(){
+    var context,
         ext = this.extent();
-    console.log("=========");
-    var canvas = newCanvas(ext);
+    this.normalImage = newCanvas(ext);
+    context = this.normalImage.getContext('2d');
 
-    ctx = canvas.getContext('2d');
+    context.beginPath();
+    context.arc(8,8,4,0,2*Math.PI);
+    context.fillStyle= "#e9b226";
+    context.closePath();
+    context.fill();
 
-    ctx.beginPath();
-    ctx.arc(0,0,5,0,2*Math.PI);
-    ctx.fillStyle= new Color(233, 178, 38);
-    ctx.closePath();
-    ctx.fill();
-    //ctx.closePath();
-    //this.changed();
-
+    //return context;
 };
+
+// ToggleButtonMorph drawing
 
 ToggleButtonMorph.prototype.createBackgrounds = function () {
 /*
@@ -764,12 +760,6 @@ ToggleButtonMorph.prototype.drawEdges = function (
 
     if (this.hasPreview) { // indicate the possible selection color
 
-        context.beginPath();
-        context.arc(this.corner,(this.height()/2 ),4,0,2*Math.PI);
-        context.fillStyle= this.pressColor.toString();
-        context.closePath();
-        context.fill();
-        /*
         if (MorphicPreferences.isFlat && !this.is3D) {
             context.fillStyle = this.pressColor.toString();
             context.fillRect(
@@ -796,7 +786,7 @@ ToggleButtonMorph.prototype.drawEdges = function (
             this.outline
         );
         context.closePath();
-        context.fill();*/
+        context.fill();
     }
 };
 
