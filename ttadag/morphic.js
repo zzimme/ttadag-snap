@@ -7748,6 +7748,10 @@ StringMorph.prototype.drawNew = function () {
         }
     }
 
+    context.lineWidth = 2;
+    context.strokeStyle="green";
+    context.strokeRect(0, 0, this.width(), this.height());
+
 };
 
 StringMorph.prototype.renderWithBlanks = function (context, startX, y) {

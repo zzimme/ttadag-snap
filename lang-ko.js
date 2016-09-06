@@ -1389,6 +1389,14 @@ SnapTranslator.dict.ko = {
     '(180) down':
         '(180) 아래',
     'Ok':
-        '확인'
+        '확인',
+    'SETTING':
+        '설정',
+    'LOGIN':
+        '로그인',
+    'LOGOUT':
+        '로그아웃',
+    'FILE':
+        '파일'
 
 };

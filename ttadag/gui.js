@@ -545,6 +545,7 @@ IDE_Morph.prototype.createControlBar = function () {
         startButton,
         projectButton,
         settingsButton,
+        loginButton,
         stageSizeButton,
         appModeButton,
         cloudButton,
@@ -724,12 +725,18 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.startButton = startButton;*/
 
     // projectButton
-    button = new PushButtonMorph(
+
+
+    button = new TPushButtonMorph(
         this,
         'projectMenu',
-        new SymbolMorph('file', 14)
+        "FILE"
+        //new SymbolMorph('file', 14)
         //'\u270E'
+        //label
     );
+
+
     button.corner = 12;
     button.color = colors[0];
     button.highlightColor = colors[1];
@@ -740,8 +747,12 @@ IDE_Morph.prototype.createControlBar = function () {
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
-    button.setExtent(new Point(200,200));
-    var label = new StringMorph(
+    button.texture = "images/icon_file.png";
+
+
+
+    //button.setExtent(new Point(200,200));
+    /*var label = new StringMorph(
         "FILE",
         10,
         'sans-serif',
@@ -757,7 +768,10 @@ IDE_Morph.prototype.createControlBar = function () {
     //label.setCenter(button.labelMinExtent);
     label.setRight(this.right()+5);
 
-    button.add(label);
+
+    button.add(label);*/
+
+
     console.log("this.labelString:"+button.labelString);
     button.drawNew();
     // button.hint = 'open, save, & annotate project';
@@ -768,23 +782,54 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(projectButton);
     this.controlBar.projectButton = projectButton; // for menu positioning
 
-   /* // settingsButton
-    button = new PushButtonMorph(
+    // loginButton
+    button = new TPushButtonMorph(
         this,
-        'settingsMenu',
-        new SymbolMorph('gears', 14)
+        null,
+        'Motion'
+        //new SymbolMorph('gears', 14)
         //'\u2699'
     );
     button.corner = 12;
     button.color = colors[0];
     button.highlightColor = colors[1];
     button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
+    button.labelMinExtent = new Point(56, 18);
     button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
+    button.texture = "images/icon_login.png";
+
+    button.drawNew();
+    // button.hint = 'edit settings';
+    button.fixLayout();
+    loginButton = button;
+    this.controlBar.add(loginButton);
+    this.controlBar.loginButton = loginButton; // for menu positioning
+
+
+    // settingsButton
+    button = new TPushButtonMorph(
+        this,
+        'settingsMenu',
+        localize('SETTING')
+        //new SymbolMorph('gears', 14)
+        //'\u2699'
+    );
+    button.corner = 12;
+    button.color = colors[0];
+    button.highlightColor = colors[1];
+    button.pressColor = colors[2];
+    button.labelMinExtent = new Point(56, 18);
+    button.padding = 0;
+    button.labelShadowOffset = new Point(-1, -1);
+    button.labelShadowColor = colors[1];
+    button.labelColor = this.buttonLabelColor;
+    button.contrast = this.buttonContrast;
+    button.texture = "images/icon_option.png";
+
     button.drawNew();
     // button.hint = 'edit settings';
     button.fixLayout();
@@ -792,6 +837,8 @@ IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(settingsButton);
     this.controlBar.settingsButton = settingsButton; // for menu positioning
 
+
+    /*
     // cloudButton
     button = new PushButtonMorph(
         this,
@@ -850,10 +897,17 @@ IDE_Morph.prototype.createControlBar = function () {
         console.log("center corners:"+myself.controlBar.corners());
         projectButton.setCenter(myself.controlBar.center());
         projectButton.setLeft(myself.controlBar.left());
+
+        loginButton.setCenter(myself.controlBar.center());
+        loginButton.setLeft(projectButton.right() + padding);
+
+        settingsButton.setCenter(myself.controlBar.center());
+        settingsButton.setLeft(loginButton.right() + padding);
+
         //projectButton.setCenter(myself.controlBar.center());
         //projectButton.setRight(cloudButton.right() + padding);
 
-        //this.updateLabel();
+        this.updateLabel();
     };
 
     this.controlBar.updateLabel = function () {

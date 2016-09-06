@@ -84,6 +84,247 @@ var ToggleElementMorph;
 var DialogBoxMorph;
 var AlignmentMorph;
 var InputFieldMorph;
+var TPushButtonMorph;
+
+
+// TPushButtonMorph ///////////////////////////////////////////////////
+
+TPushButtonMorph.prototype = new TriggerMorph();
+TPushButtonMorph.prototype.constructor = TPushButtonMorph;
+TPushButtonMorph.uber = TriggerMorph.prototype;
+
+TPushButtonMorph.prototype.fontSize = 10;
+TPushButtonMorph.prototype.fontStyle = 'sans-serif';
+TPushButtonMorph.prototype.labelColor = new Color(0, 0, 0);
+TPushButtonMorph.prototype.labelShadowColor = new Color(255, 255, 255);
+TPushButtonMorph.prototype.labelShadowOffset = new Point(1, 1);
+
+TPushButtonMorph.prototype.color = new Color(220, 220, 220);
+TPushButtonMorph.prototype.pressColor = new Color(115, 180, 240);
+TPushButtonMorph.prototype.highlightColor
+    = TPushButtonMorph.prototype.pressColor.lighter(50);
+TPushButtonMorph.prototype.outlineColor = new Color(30, 30, 30);
+TPushButtonMorph.prototype.outlineGradient = false;
+TPushButtonMorph.prototype.contrast = 60;
+
+TPushButtonMorph.prototype.edge = 2;
+TPushButtonMorph.prototype.corner = 5;
+TPushButtonMorph.prototype.outline = 1.00001;
+TPushButtonMorph.prototype.padding = 3;
+
+function TPushButtonMorph(
+    target,
+    action,
+    labelString,
+    environment,
+    hint,
+    template
+) {
+    this.init(
+        target,
+        action,
+        labelString,
+        environment,
+        hint,
+        template
+    );
+}
+
+TPushButtonMorph.prototype.init = function (
+    target,
+    action,
+    labelString,
+    environment,
+    hint,
+    template
+) {
+    // additional properties:
+    this.is3D = false; // for "flat" design exceptions
+    this.target = target || null;
+    this.action = action || null;
+    this.environment = environment || null;
+    this.labelString = labelString || null;
+    this.label = null;
+    this.labelMinExtent = new Point(0, 0);
+    this.hint = hint || null;
+    this.template = template || null; // for pre-computed backbrounds
+    // if a template is specified, its background images are used as cache
+
+    // initialize inherited properties:
+    TriggerMorph.uber.init.call(this);
+
+    // override inherited properites:
+    this.color = TPushButtonMorph.prototype.color;
+
+    this.drawNew();
+    this.fixLayout();
+};
+
+
+TPushButtonMorph.prototype.fixLayout = function () {
+    // make sure I at least encompass my label
+    if (this.label !== null) {
+        var padding = this.padding * 2 + this.outline * 2 + this.edge * 2;
+        this.setExtent(new Point(
+            Math.max(this.label.width(), this.labelMinExtent.x) + padding,
+            Math.max(this.label instanceof StringMorph ?
+                this.label.rawHeight() :
+                this.label.height(), this.labelMinExtent.y) + padding
+        ));
+        this.label.setCenter(this.center());
+    }
+};
+
+TPushButtonMorph.prototype.drawTexture = function (context, url) {
+    var myself = this;
+    this.cachedTexture = new Image();
+    this.cachedTexture.onload = function () {
+        myself.drawCachedTexture(context);
+    };
+    this.cachedTexture.src = this.texture = url; // make absolute
+};
+
+TPushButtonMorph.prototype.drawCachedTexture = function (context) {
+    //var context = this.image.getContext('2d');
+    context.drawImage(
+        this.cachedTexture,
+        0,
+        Math.round((this.height() - this.cachedTexture.height) / 2)
+    );
+
+    this.changed();
+};
+
+
+TPushButtonMorph.prototype.createLabel = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+
+    if (this.label !== null) {
+        this.label.destroy();
+    }
+
+    this.label = new StringMorph(
+        localize(this.labelString),
+        this.fontSize,
+        this.fontStyle,
+        true,
+        false,
+        false,
+        shading ? this.labelShadowOffset : null,
+        this.labelShadowColor,
+        this.labelColor
+    );
+
+
+
+    this.label.drawNew();
+    this.add(this.label);
+    this.label.setCenter(this.center());
+
+
+
+    console.log("!!!!!"+this.language);
+
+
+};
+
+
+TPushButtonMorph.prototype.createBackgrounds = function () {
+    var context,
+        ext = this.extent();
+    console.log("11111");
+    if (this.template) { // take the backgrounds images from the template
+        this.image = this.template.image;
+        this.normalImage = this.template.normalImage;
+        this.highlightImage = this.template.highlightImage;
+        this.pressImage = this.template.pressImage;
+        return null;
+    }
+
+    this.normalImage = newCanvas(ext);
+    context = this.normalImage.getContext('2d');
+    //this.drawOutline(context);
+    this.drawBackground(context, this.color);
+    this.drawTexture(context, this.texture);
+    /* this.drawEdges(
+     context,
+     this.color,
+     this.color.lighter(this.contrast),
+     this.color.darker(this.contrast)
+     );*/
+
+    this.highlightImage = newCanvas(ext);
+    context = this.highlightImage.getContext('2d');
+    // this.drawOutline(context);
+    this.drawBackground(context, this.highlightColor);
+    this.drawTexture(context, this.texture);
+    /*this.drawEdges(
+     context,
+     this.highlightColor,
+     this.highlightColor.lighter(this.contrast),
+     this.highlightColor.darker(this.contrast)
+     );*/
+
+    this.pressImage = newCanvas(ext);
+    context = this.pressImage.getContext('2d');
+    //  this.drawOutline(context);
+    this.drawBackground(context, this.pressColor);
+
+    this.drawTexture(context, this.texture);
+    /* this.drawEdges(
+     context,
+     this.pressColor,
+     this.pressColor.darker(this.contrast),
+     this.pressColor.lighter(this.contrast)
+     );*/
+
+    this.image = this.normalImage;
+};
+
+
+TPushButtonMorph.prototype.drawBackground = function (context, color) {
+    var isFlat = MorphicPreferences.isFlat && !this.is3D;
+
+    console.log("222");
+    context.fillStyle = color.toString();
+    context.beginPath();
+    /*this.outlinePath(
+     context,
+     isFlat ? 0 : Math.max(this.corner - this.outline, 0),
+     this.outline
+     );*/
+    context.closePath();
+    context.fill();
+    context.lineWidth = this.outline;
+
+    context.lineWidth = 2;
+    context.strokeStyle="red";
+    context.strokeRect(0, 0, this.width(), this.height());
+};
+
+// PushButtonMorph events
+
+TPushButtonMorph.prototype.mouseDownLeft = function () {
+    TPushButtonMorph.uber.mouseDownLeft.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center().add(1));
+    }
+};
+
+TPushButtonMorph.prototype.mouseClickLeft = function () {
+    TPushButtonMorph.uber.mouseClickLeft.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center());
+    }
+};
+
+TPushButtonMorph.prototype.mouseLeave = function () {
+    TPushButtonMorph.uber.mouseLeave.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center());
+    }
+};
+
 
 // PushButtonMorph /////////////////////////////////////////////////////
 
