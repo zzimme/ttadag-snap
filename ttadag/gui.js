@@ -4474,6 +4474,7 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback) {
     }
     SpriteMorph.prototype.initBlocks();
     this.spriteBar.tabBar.tabTo('scripts');
+    this.createControlBar();
     this.createCategories();
     this.createCorralBar();
     this.fixLayout();
