@@ -5215,7 +5215,7 @@ ScriptsMorph.prototype.init = function (owner) {
     this.focus = null;
 
     ScriptsMorph.uber.init.call(this);
-    this.setColor(new Color(70, 70, 70));
+    this.setColor(new Color(255, 0, 0));
     this.noticesTransparentClick = true;
 };
 

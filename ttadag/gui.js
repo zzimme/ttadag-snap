@@ -99,7 +99,7 @@ IDE_Morph.uber = Morph.prototype;
 
 IDE_Morph.prototype.setDefaultDesign = function () {
     MorphicPreferences.isFlat = false;
-    SpriteMorph.prototype.paletteColor = new Color(10, 10, 10);
+    SpriteMorph.prototype.paletteColor = new Color(50, 51, 51);
     SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230);
     StageMorph.prototype.paletteTextColor
         = SpriteMorph.prototype.paletteTextColor;
@@ -109,21 +109,28 @@ IDE_Morph.prototype.setDefaultDesign = function () {
 
     IDE_Morph.prototype.buttonContrast = 30;
     IDE_Morph.prototype.backgroundColor = new Color(40, 40, 40);
-    IDE_Morph.prototype.frameColor = SpriteMorph.prototype.paletteColor;
+    IDE_Morph.prototype.frameColor = new Color(17, 18, 19);
 
-    IDE_Morph.prototype.groupColor
-        = SpriteMorph.prototype.paletteColor.lighter(8);
+    IDE_Morph.prototype.spriteBarColor = new Color(53, 54, 55);
+
+    IDE_Morph.prototype.groupColor = new Color(66, 67, 68);
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
     IDE_Morph.prototype.buttonLabelColor = new Color(255, 255, 255);
+
+    IDE_Morph.prototype.tabColor = new Color(31,32,32);
+
+
     IDE_Morph.prototype.tabColors = [
-        IDE_Morph.prototype.groupColor.darker(40),
-        IDE_Morph.prototype.groupColor.darker(60),
-        IDE_Morph.prototype.groupColor
+        IDE_Morph.prototype.tabColor.darker(40),
+        IDE_Morph.prototype.tabColor.darker(60),
+        IDE_Morph.prototype.tabColor
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.appModeColor = new Color();
     IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
     IDE_Morph.prototype.padding = 5;
+
+
 
     SpriteIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
@@ -146,15 +153,20 @@ IDE_Morph.prototype.setFlatDesign = function () {
 
     IDE_Morph.prototype.buttonContrast = 30;
     IDE_Morph.prototype.backgroundColor = new Color(200, 200, 200);
-    IDE_Morph.prototype.frameColor = new Color(255, 255, 255);
+    IDE_Morph.prototype.frameColor = new Color(17, 18, 19);
 
-    IDE_Morph.prototype.groupColor = new Color(230, 230, 230);
+    IDE_Morph.prototype.spriteBarColor = new Color(53, 54, 55);
+
+    IDE_Morph.prototype.groupColor = new Color(66, 67, 68);
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
     IDE_Morph.prototype.buttonLabelColor = new Color(70, 70, 70);
+
+    IDE_Morph.prototype.tabColor = new Color(31,32,32);
+
     IDE_Morph.prototype.tabColors = [
-        IDE_Morph.prototype.groupColor.lighter(60),
-        IDE_Morph.prototype.groupColor.darker(10),
-        IDE_Morph.prototype.groupColor
+        IDE_Morph.prototype.tabColor.lighter(60),
+        IDE_Morph.prototype.tabColor.darker(10),
+        IDE_Morph.prototype.tabColor
     ];
     IDE_Morph.prototype.rotationStyleColors = [
         IDE_Morph.prototype.groupColor,
@@ -786,7 +798,7 @@ IDE_Morph.prototype.createControlBar = function () {
     button = new TPushButtonMorph(
         this,
         null,
-        'Motion'
+        'LOGIN'
         //new SymbolMorph('gears', 14)
         //'\u2699'
     );
@@ -893,8 +905,7 @@ IDE_Morph.prototype.createControlBar = function () {
         /*cloudButton.setCenter(myself.controlBar.center());
         cloudButton.setRight(settingsButton.left() - padding);
 */
-        console.log("bound:"+projectButton.bounds.toString());
-        console.log("center corners:"+myself.controlBar.corners());
+
         projectButton.setCenter(myself.controlBar.center());
         projectButton.setLeft(myself.controlBar.left());
 
@@ -907,7 +918,7 @@ IDE_Morph.prototype.createControlBar = function () {
         //projectButton.setCenter(myself.controlBar.center());
         //projectButton.setRight(cloudButton.right() + padding);
 
-        this.updateLabel();
+        //this.updateLabel();
     };
 
     this.controlBar.updateLabel = function () {
@@ -935,6 +946,7 @@ IDE_Morph.prototype.createControlBar = function () {
         this.label.drawNew();
         this.add(this.label);
         this.label.setCenter(this.center());
+
         //this.label.setLeft(this.settingsButton.right() + padding);
     };
 };
@@ -1115,167 +1127,29 @@ IDE_Morph.prototype.createStageHandle = function () {
     this.add(this.stageHandle);
 };
 
-IDE_Morph.prototype.createSpriteBar = function () {
-    // assumes that the categories pane has already been created
-    var rotationStyleButtons = [],
-        thumbSize = new Point(45, 45),
-        nameField,
-        padlock,
-        thumbnail,
-        tabCorner = 15,
+IDE_Morph.prototype.createTab = function() {
+    var
+        //tabBar = new AlignmentMorph('row', -tabCorner * 2),
+        tabCorner = 3,
         tabColors = this.tabColors,
-        tabBar = new AlignmentMorph('row', -tabCorner * 2),
         tab,
-        symbols = ['\u2192', '\u21BB', '\u2194'],
-        labels = ['don\'t rotate', 'can rotate', 'only face left/right'],
-        myself = this;
+        currentTabLength,
+        tabBar;
 
-    if (this.spriteBar) {
-        this.spriteBar.destroy();
-    }
+    currentTabLength = this.spriteBar.tabBar.children.length + 1;
+   // console.log()
 
-    this.spriteBar = new Morph();
-    this.spriteBar.color = this.frameColor;
-    this.add(this.spriteBar);
+    tabBar = this.spriteBar.tabBar;
 
-    function addRotationStyleButton(rotationStyle) {
-        var colors = myself.rotationStyleColors,
-            button;
-
-        button = new ToggleButtonMorph(
-            colors,
-            myself, // the IDE is the target
-            function () {
-                if (myself.currentSprite instanceof SpriteMorph) {
-                    myself.currentSprite.rotationStyle = rotationStyle;
-                    myself.currentSprite.changed();
-                    myself.currentSprite.drawNew();
-                    myself.currentSprite.changed();
-                }
-                rotationStyleButtons.forEach(function (each) {
-                    each.refresh();
-                });
-            },
-            symbols[rotationStyle], // label
-            function () {  // query
-                return myself.currentSprite instanceof SpriteMorph
-                    && myself.currentSprite.rotationStyle === rotationStyle;
-            },
-            null, // environment
-            localize(labels[rotationStyle])
-        );
-
-        button.corner = 8;
-        button.labelMinExtent = new Point(11, 11);
-        button.padding = 0;
-        button.labelShadowOffset = new Point(-1, -1);
-        button.labelShadowColor = colors[1];
-        button.labelColor = myself.buttonLabelColor;
-        button.fixLayout();
-        button.refresh();
-        rotationStyleButtons.push(button);
-        button.setPosition(myself.spriteBar.position().add(2));
-        button.setTop(button.top()
-            + ((rotationStyleButtons.length - 1) * (button.height() + 2))
-            );
-        myself.spriteBar.add(button);
-        if (myself.currentSprite instanceof StageMorph) {
-            button.hide();
-        }
-        return button;
-    }
-
-    addRotationStyleButton(1);
-    addRotationStyleButton(2);
-    addRotationStyleButton(0);
-    this.rotationStyleButtons = rotationStyleButtons;
-
-    thumbnail = new Morph();
-    thumbnail.setExtent(thumbSize);
-    thumbnail.image = this.currentSprite.thumbnail(thumbSize);
-    thumbnail.setPosition(
-        rotationStyleButtons[0].topRight().add(new Point(5, 3))
-    );
-    this.spriteBar.add(thumbnail);
-
-    thumbnail.fps = 3;
-
-    thumbnail.step = function () {
-        if (thumbnail.version !== myself.currentSprite.version) {
-            thumbnail.image = myself.currentSprite.thumbnail(thumbSize);
-            thumbnail.changed();
-            thumbnail.version = myself.currentSprite.version;
-        }
-    };
-
-    nameField = new InputFieldMorph(this.currentSprite.name);
-    nameField.setWidth(100); // fixed dimensions
-    nameField.contrast = 90;
-    nameField.setPosition(thumbnail.topRight().add(new Point(10, 3)));
-    this.spriteBar.add(nameField);
-    nameField.drawNew();
-    nameField.accept = function () {
-        var newName = nameField.getValue();
-        myself.currentSprite.setName(
-            myself.newSpriteName(newName, myself.currentSprite)
-        );
-        nameField.setContents(myself.currentSprite.name);
-    };
-    this.spriteBar.reactToEdit = nameField.accept;
-
-    // padlock
-    padlock = new ToggleMorph(
-        'checkbox',
-        null,
-        function () {
-            myself.currentSprite.isDraggable =
-                !myself.currentSprite.isDraggable;
-        },
-        localize('draggable'),
-        function () {
-            return myself.currentSprite.isDraggable;
-        }
-    );
-    padlock.label.isBold = false;
-    padlock.label.setColor(this.buttonLabelColor);
-    padlock.color = tabColors[2];
-    padlock.highlightColor = tabColors[0];
-    padlock.pressColor = tabColors[1];
-
-    padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
-            new Point() : new Point(-1, -1);
-    padlock.tick.shadowColor = new Color(); // black
-    padlock.tick.color = this.buttonLabelColor;
-    padlock.tick.isBold = false;
-    padlock.tick.drawNew();
-
-    padlock.setPosition(nameField.bottomLeft().add(2));
-    padlock.drawNew();
-    this.spriteBar.add(padlock);
-    if (this.currentSprite instanceof StageMorph) {
-        padlock.hide();
-    }
-
-    // tab bar
-    tabBar.tabTo = function (tabString) {
-        var active;
-        myself.currentTab = tabString;
-        this.children.forEach(function (each) {
-            each.refresh();
-            if (each.state) {active = each; }
-        });
-        active.refresh(); // needed when programmatically tabbing
-        myself.createSpriteEditor();
-        myself.fixLayout('tabEditor');
-    };
+    this.currentTab = 'Task'+currentTabLength;
 
     tab = new TabMorph(
         tabColors,
         null, // target
-        function () {tabBar.tabTo('scripts'); },
-        localize('Scripts'), // label
+        function () {tabBar.tabTo('Task'+currentTabLength); },
+        'Task'+currentTabLength, // label
         function () {  // query
-            return myself.currentTab === 'scripts';
+            return this.currentTab === 'Task'+currentTabLength;
         }
     );
     tab.padding = 3;
@@ -1286,8 +1160,138 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.labelColor = this.buttonLabelColor;
     tab.drawNew();
     tab.fixLayout();
+    this.spriteBar.tabBar.add(tab);
+   // tabBar.add(tab);
+    //tabBar.addTab(tab);
+};
+
+
+IDE_Morph.prototype.selectTab = function (tabString) {
+    if (this.currentSprite && this.currentSprite.scripts.focus) {
+        this.currentSprite.scripts.focus.stopEditing();
+    }
+
+    console.log("selectTab");
+    this.currentTab = tabString;
+    this.createPalette();
+    this.createSpriteBar();
+    this.createSpriteEditor();
+    this.corral.refresh();
+    this.fixLayout('selectSprite');
+    this.currentSprite.scripts.fixMultiArgs();
+};
+
+/**
+ *
+ * tab bar
+ * */
+IDE_Morph.prototype.createSpriteBar = function () {
+    // assumes that the categories pane has already been created
+    var rotationStyleButtons = [],
+        thumbSize = new Point(45, 45),
+        nameField,
+        padlock,
+        thumbnail,
+        tabCorner = 3,
+        tabColors = this.tabColors,
+
+        tab,
+        symbols = ['\u2192', '\u21BB', '\u2194'],
+        labels = ['don\'t rotate', 'can rotate', 'only face left/right'],
+        myself = this,
+        currentTabCount = 0;
+
+    if (this.spriteBar) {
+        this.spriteBar.destroy();
+    }
+
+    this.spriteBar = new Morph();
+    this.spriteBar.color = this.spriteBarColor;
+    this.add(this.spriteBar);
+
+    var tabBar = new AlignmentMorph('row', 4);
+
+
+    tabBar.tabTo = function (tabString) {
+        var active;
+
+        myself.currentTab = tabString;
+        console.log("cure:"+myself.currentTab+",   tabString:"+tabString);
+        this.children.forEach(function (each) {
+            each.refresh();
+            if (each.state) {active = each; }
+
+            console.log("name:"+each.labelString+", state:"+each.state)
+        });
+
+        active.refresh(); // needed when programmatically tabbing
+
+        //myself.selectTab(tabString);
+        myself.createSpriteEditor();
+        myself.fixLayout('tabEditor');
+
+
+
+    };
+
+
+    // console.log()
+
+
+
+   // var label = 'Task'+((tabBar.children.length + 1)*1);
+    var label = 'Task 1';
+
+    tab = new TabMorph(
+        tabColors,
+        null, // target
+        function () {
+            tabBar.tabTo(label);
+        },
+        label, // label
+        function () {  // query
+            return myself.currentTab === label;
+        }
+    );
+
+
+    tab.padding = 3;
+    tab.corner = tabCorner;
+    tab.edge = 1;
+    tab.labelShadowOffset = new Point(-1, -1);
+    tab.labelShadowColor = tabColors[1];
+    tab.labelColor = this.buttonLabelColor;
+    tab.drawNew();
+    tab.fixLayout();
     tabBar.add(tab);
 
+
+    var label2 = 'Task 2';
+    this.currentTab = label2;
+    tab = new TabMorph(
+        tabColors,
+        null, // target
+        function () {
+            tabBar.tabTo(label2);
+        },
+        label2, // label
+        function () {  // query
+            return myself.currentTab === label2;
+        }
+    );
+
+
+    tab.padding = 3;
+    tab.corner = tabCorner;
+    tab.edge = 1;
+    tab.labelShadowOffset = new Point(-1, -1);
+    tab.labelShadowColor = tabColors[1];
+    tab.labelColor = this.buttonLabelColor;
+    tab.drawNew();
+    tab.fixLayout();
+    tabBar.add(tab);
+
+/*
     tab = new TabMorph(
         tabColors,
         null, // target
@@ -1324,7 +1328,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.labelColor = this.buttonLabelColor;
     tab.drawNew();
     tab.fixLayout();
-    tabBar.add(tab);
+    tabBar.add(tab);*/
 
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
@@ -1348,7 +1352,7 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.spriteEditor.destroy();
     }
 
-    if (this.currentTab === 'scripts') {
+   // if (this.currentTab === 'scripts') {
         scripts.isDraggable = false;
         scripts.color = this.groupColor;
         scripts.cachedTexture = this.scriptsPaneTexture;
@@ -1368,7 +1372,7 @@ IDE_Morph.prototype.createSpriteEditor = function () {
         this.add(this.spriteEditor);
         this.spriteEditor.scrollX(this.spriteEditor.padding);
         this.spriteEditor.scrollY(this.spriteEditor.padding);
-    } else if (this.currentTab === 'costumes') {
+ /*   } else if (this.currentTab === 'costumes') {
         this.spriteEditor = new WardrobeMorph(
             this.currentSprite,
             this.sliderColor
@@ -1403,7 +1407,7 @@ IDE_Morph.prototype.createSpriteEditor = function () {
             }
         };
         this.add(this.spriteEditor);
-    }
+    }*/
 };
 
 IDE_Morph.prototype.createCorralBar = function () {
@@ -1653,10 +1657,11 @@ IDE_Morph.prototype.fixLayout = function (situation) {
     this.changed();
 };
 
+//Todo
 IDE_Morph.prototype.setProjectName = function (string) {
     this.projectName = string.replace(/['"]/g, ''); // filter quotation marks
     this.hasChangedMedia = true;
-    this.controlBar.updateLabel();
+    //this.controlBar.updateLabel();
 };
 
 // IDE_Morph resizing
@@ -1892,16 +1897,18 @@ IDE_Morph.prototype.stopAllScripts = function () {
 };
 
 IDE_Morph.prototype.selectSprite = function (sprite) {
-    if (this.currentSprite && this.currentSprite.scripts.focus) {
+    /*if (this.currentSprite && this.currentSprite.scripts.focus) {
         this.currentSprite.scripts.focus.stopEditing();
-    }
+    }*/
+
+    console.log("selectSprite");
     this.currentSprite = sprite;
     this.createPalette();
     this.createSpriteBar();
     this.createSpriteEditor();
-    this.corral.refresh();
+   // this.corral.refresh();
     this.fixLayout('selectSprite');
-    this.currentSprite.scripts.fixMultiArgs();
+   // this.currentSprite.scripts.fixMultiArgs();
 };
 
 // IDE_Morph retina display support
