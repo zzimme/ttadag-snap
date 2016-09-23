@@ -1188,6 +1188,52 @@ function TabMorph(
     );
 }
 
+
+
+TabMorph.prototype.init = function (
+    colors,
+    target,
+    action,
+    labelString,
+    query,
+    environment,
+    hint,
+    template,
+    minWidth,
+    hasPreview,
+    isPicture
+) {
+    // additional properties:
+    this.state = false;
+    this.query = query || function () {return true; };
+    this.minWidth = minWidth || null;
+    this.hasPreview = hasPreview || false;
+    this.isPicture = isPicture || false;
+    this.trueStateLabel = null;
+
+    this.scripts = new ScriptsMorph(this);
+
+    // initialize inherited properties:
+    ToggleButtonMorph.uber.init.call(
+        this,
+        target,
+        action,
+        labelString,
+        environment,
+        hint,
+        template
+    );
+
+    // override default colors if others are specified
+    if (colors) {
+        this.color = colors[0];
+        this.highlightColor = colors[1];
+        this.pressColor = colors[2];
+    }
+
+    this.refresh();
+    this.drawNew();
+};
 // TabMorph layout:
 
 TabMorph.prototype.fixLayout = function () {

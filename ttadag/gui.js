@@ -230,6 +230,8 @@ IDE_Morph.prototype.init = function (isAutoFill) {
     this.sprites = new List([this.currentSprite]);
     this.currentCategory = 'motion';
     this.currentTab = 'scripts';
+    this.currentTabMorph = null;
+
     this.projectName = '';
     this.projectNotes = '';
 
@@ -1166,21 +1168,6 @@ IDE_Morph.prototype.createTab = function() {
 };
 
 
-IDE_Morph.prototype.selectTab = function (tabString) {
-    if (this.currentSprite && this.currentSprite.scripts.focus) {
-        this.currentSprite.scripts.focus.stopEditing();
-    }
-
-    console.log("selectTab");
-    this.currentTab = tabString;
-    this.createPalette();
-    this.createSpriteBar();
-    this.createSpriteEditor();
-    this.corral.refresh();
-    this.fixLayout('selectSprite');
-    this.currentSprite.scripts.fixMultiArgs();
-};
-
 /**
  *
  * tab bar
@@ -1225,7 +1212,8 @@ IDE_Morph.prototype.createSpriteBar = function () {
         });
 
         active.refresh(); // needed when programmatically tabbing
-
+        myself.currentTabMorph = active;
+        myself.currentSprite.scripts = active.scripts;
         //myself.selectTab(tabString);
         myself.createSpriteEditor();
         myself.fixLayout('tabEditor');
@@ -1291,44 +1279,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
     tab.fixLayout();
     tabBar.add(tab);
 
-/*
-    tab = new TabMorph(
-        tabColors,
-        null, // target
-        function () {tabBar.tabTo('costumes'); },
-        localize('Costumes'), // label
-        function () {  // query
-            return myself.currentTab === 'costumes';
-        }
-    );
-    tab.padding = 3;
-    tab.corner = tabCorner;
-    tab.edge = 1;
-    tab.labelShadowOffset = new Point(-1, -1);
-    tab.labelShadowColor = tabColors[1];
-    tab.labelColor = this.buttonLabelColor;
-    tab.drawNew();
-    tab.fixLayout();
-    tabBar.add(tab);
-
-    tab = new TabMorph(
-        tabColors,
-        null, // target
-        function () {tabBar.tabTo('sounds'); },
-        localize('Sounds'), // label
-        function () {  // query
-            return myself.currentTab === 'sounds';
-        }
-    );
-    tab.padding = 3;
-    tab.corner = tabCorner;
-    tab.edge = 1;
-    tab.labelShadowOffset = new Point(-1, -1);
-    tab.labelShadowColor = tabColors[1];
-    tab.labelColor = this.buttonLabelColor;
-    tab.drawNew();
-    tab.fixLayout();
-    tabBar.add(tab);*/
+    this.currentTabMorph = tab;
 
     tabBar.fixLayout();
     tabBar.children.forEach(function (each) {
@@ -1345,7 +1296,7 @@ IDE_Morph.prototype.createSpriteBar = function () {
 
 IDE_Morph.prototype.createSpriteEditor = function () {
     // assumes that the logo pane and the stage have already been created
-    var scripts = this.currentSprite.scripts,
+    var scripts = this.currentTabMorph.scripts,
         myself = this;
 
     if (this.spriteEditor) {
@@ -1906,9 +1857,9 @@ IDE_Morph.prototype.selectSprite = function (sprite) {
     this.createPalette();
     this.createSpriteBar();
     this.createSpriteEditor();
-   // this.corral.refresh();
+    this.corral.refresh();
     this.fixLayout('selectSprite');
-   // this.currentSprite.scripts.fixMultiArgs();
+    this.currentSprite.scripts.fixMultiArgs();
 };
 
 // IDE_Morph retina display support
